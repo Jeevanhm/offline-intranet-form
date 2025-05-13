@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DataInnovationForm from './DataInnovationForm';
 import DataManagement from './DataManagement';
-import { Home, FileExcel } from 'lucide-react';
+import { Home, FileText } from 'lucide-react';
 
 const AppLayout: React.FC = () => {
   const [activeTab, setActiveTab] = useState('form');
@@ -25,7 +25,7 @@ const AppLayout: React.FC = () => {
                 <span>New Request</span>
               </TabsTrigger>
               <TabsTrigger value="data" className="flex items-center gap-2">
-                <FileExcel className="h-4 w-4" />
+                <FileText className="h-4 w-4" />
                 <span>View & Export</span>
               </TabsTrigger>
             </TabsList>

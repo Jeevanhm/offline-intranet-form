@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { getAllFormData, deleteFormData } from '@/utils/offlineStorage';
 import { exportToExcel } from '@/utils/excelUtils';
 import { useToast } from '@/hooks/use-toast';
-import { FileExcel, Trash } from 'lucide-react';
+import { FileText, Trash } from 'lucide-react';
 
 interface FormSubmission {
   id: number;
@@ -92,7 +92,7 @@ const DataManagement: React.FC = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Saved Form Submissions</h2>
         <Button onClick={handleExport} disabled={formSubmissions.length === 0}>
-          <FileExcel className="mr-2 h-4 w-4" />
+          <FileText className="mr-2 h-4 w-4" />
           Export to Excel
         </Button>
       </div>
