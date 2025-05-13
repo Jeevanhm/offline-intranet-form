@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 210 100% 35%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -35,19 +36,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -98,4 +92,48 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.app-table {
+  @apply w-full border-collapse;
+}
+
+.app-table td {
+  @apply p-2 border border-gray-300;
+}
+
+.app-table th {
+  @apply p-2 bg-gray-100 border border-gray-300 font-semibold;
+}
+
+.form-table {
+  @apply w-full border-collapse border border-gray-300;
+}
+
+.form-table td {
+  @apply p-2 border border-gray-300;
+}
+
+.form-section {
+  @apply border border-gray-400 rounded-md mb-4;
+}
+
+.form-section-header {
+  @apply text-center font-semibold p-3 bg-gray-100 border-b border-gray-400;
+}
+
+.form-section-content {
+  @apply p-3;
+}
+
+.form-row {
+  @apply flex flex-wrap mb-2;
+}
+
+.form-label {
+  @apply font-medium w-1/3 pr-2;
+}
+
+.form-value {
+  @apply w-2/3;
 }
