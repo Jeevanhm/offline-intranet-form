@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -184,11 +183,28 @@ const DataInnovationForm: React.FC = () => {
   
   return (
     <form onSubmit={handleSubmit} className="space-y-6 pb-10">
+      {/* Application Name field at the top */}
+      <div className="border rounded-md overflow-hidden mb-6">
+        <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+          Application Details
+        </div>
+        <div className="p-4">
+          <Label htmlFor="appName" className="block font-medium mb-2">Application Name</Label>
+          <Input 
+            id="appName"
+            value={formData.appName} 
+            onChange={(e) => handleChange("appName", e.target.value)}
+            placeholder="Enter application name"
+            className="w-full"
+          />
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* App Name Section - Left Column */}
         <div className="border rounded-md overflow-hidden">
           <div className="bg-gray-100 p-3 text-center font-semibold border-b">
-            App Name – {formData.appName ? formData.appName : "Enter Name Below"}
+            App Information
           </div>
           <div className="p-4 space-y-2">
             {renderField("Requestor", 
@@ -268,17 +284,6 @@ const DataInnovationForm: React.FC = () => {
                 className="w-full text-right"
               />
             )}
-            
-            <div className="col-span-2 mt-4">
-              <Label htmlFor="appName" className="block font-medium mb-1">Application Name</Label>
-              <Input 
-                id="appName"
-                value={formData.appName} 
-                onChange={(e) => handleChange("appName", e.target.value)}
-                placeholder="Enter application name"
-                className="w-full"
-              />
-            </div>
           </div>
         </div>
         
@@ -303,16 +308,15 @@ const DataInnovationForm: React.FC = () => {
               </Select>
             )}
             
-            {renderField("Exceptions to CMS Support", 
-              <div className="w-full">
-                <Textarea 
-                  value={formData.cmsExceptions} 
-                  onChange={(e) => handleChange("cmsExceptions", e.target.value)}
-                  placeholder="Enter any exceptions"
-                  className="min-h-[120px] text-right"
-                />
-              </div>
-            )}
+            <div className="mt-4">
+              <Label className="block font-medium mb-2">Exceptions to CMS Support:</Label>
+              <Textarea 
+                value={formData.cmsExceptions} 
+                onChange={(e) => handleChange("cmsExceptions", e.target.value)}
+                placeholder="Enter any exceptions"
+                className="min-h-[180px] w-full"
+              />
+            </div>
           </div>
         </div>
         
