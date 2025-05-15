@@ -65,7 +65,7 @@ interface FormData {
   // Other Notes section
   otherNotes: string;
 
-  // Tab Manager signoff
+  // Manager Approval
   tabManagerSignoff: string;
 }
 
@@ -126,7 +126,7 @@ const initialFormData: FormData = {
   // Other Notes section
   otherNotes: "• DB size 10G\n• SQL on VM:\n  • 4 vCPU & 32G RAM\n  • Windows 2022 license\n• Azure SQL MI\n• Azure SQL DB",
   
-  // Tab Manager signoff
+  // Manager Approval
   tabManagerSignoff: "No",
 };
 
@@ -719,13 +719,13 @@ const DataInnovationForm: React.FC = () => {
           </div>
         </div>
         
-        {/* Tab Manager Signoff */}
+        {/* Manager Approval - renamed from Tab Manager Signoff */}
         <div className="border rounded-md overflow-hidden col-span-1 md:col-span-3">
           <div className="bg-gray-100 p-3 text-center font-semibold border-b">
-            Tab Manager Signoff
+            Manager Approval
           </div>
           <div className="p-4 space-y-2">
-            {renderField("Tab Manager Approval", 
+            {renderField("Manager Approval", 
               <Select 
                 value={formData.tabManagerSignoff} 
                 onValueChange={(value) => handleYesNoChange("tabManagerSignoff", value)}
