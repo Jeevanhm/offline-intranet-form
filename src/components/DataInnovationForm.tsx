@@ -15,6 +15,7 @@ interface FormData {
   appOwner: string;
   l1Leadership: string;
   dateRequested: string;
+  domain: string;
   fundingAvailable: string;
   fundCode: string;
   asgIrb: string;
@@ -67,30 +68,31 @@ interface FormData {
 
 const initialFormData: FormData = {
   // App Name section
-  appName: "Data Innovation App",
+  appName: "",
   requestor: "",
   appOwner: "",
   l1Leadership: "",
   dateRequested: new Date().toISOString().split('T')[0],
+  domain: "School",
   fundingAvailable: "No",
   fundCode: "",
-  asgIrb: "NA – Existing App",
+  asgIrb: "Pending",
   
   // Location section
   azure: "Yes",
   onPrem: "No",
-  dataCenterLocation: "EUS",
+  dataCenterLocation: "No",
   physical: "No",
   locationPhysicalReason: "",
   
   // Server Count section
-  prodServerCount: 2,
-  nonProdServerCount: 1,
+  prodServerCount: 1,
+  nonProdServerCount: 0,
   drServerCount: 0,
   
   // Environments section
   prodEnv: "Yes",
-  nonProdEnv: "Yes",
+  nonProdEnv: "No",
   drEnv: "No",
   
   // Support Needs section
@@ -98,16 +100,16 @@ const initialFormData: FormData = {
   cmsExceptions: "",
   
   // Database Platforms section
-  sql: "No",
+  sql: "Yes",
   oracle: "No",
   otherDb: "No",
   otherDbExplain: "",
   
   // Storage Needs section
-  azureType: "Yes",
-  azureVolume: "2x1.2TB & 1x500GB",
+  azureType: "Blob",
+  azureVolume: "300TB",
   onPremStorage: "No",
-  onPremVolume: "",
+  onPremVolume: "No",
   
   // Exceptions section
   backup: "Yes",
@@ -116,10 +118,10 @@ const initialFormData: FormData = {
   physicalReason: "",
   onPremExceptions: "No",
   onPremReason: "",
-  noTestEnvSignOff: "NA",
+  noTestEnvSignOff: "Pending",
   
   // Other Notes section
-  otherNotes: "4 vCPU & 16G RAM\nWin Server 2022 licenses",
+  otherNotes: "• DB size 10G\n• SQL on VM:\n  • 4 vCPU & 32G RAM\n  • Windows 2022 license\n• Azure SQL MI\n• Azure SQL DB",
 };
 
 const DataInnovationForm: React.FC = () => {
@@ -150,9 +152,6 @@ const DataInnovationForm: React.FC = () => {
         description: "Your request has been saved locally and can be exported to Excel.",
         duration: 5000,
       });
-      
-      // Reset form or keep values based on user preference
-      // setFormData(initialFormData);
     } catch (error) {
       toast({
         title: "Error Submitting Form",
@@ -165,599 +164,548 @@ const DataInnovationForm: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+
+  // Helper function to render field/value pairs
+  const renderField = (label: string, value: React.ReactNode, colSpan: number = 1) => {
+    return (
+      <div className={`grid grid-cols-2 items-center border-b border-gray-200 py-2 ${colSpan > 1 ? 'col-span-' + colSpan : ''}`}>
+        <div className="font-medium text-left">{label}:</div>
+        <div className="text-right">{value}</div>
+      </div>
+    );
+  };
   
   return (
     <form onSubmit={handleSubmit} className="space-y-6 pb-10">
-      {/* App Name Section */}
-      <div className="form-section">
-        <div className="form-section-header">
-          App Name – Data Innovation App
-        </div>
-        <div className="form-section-content">
-          <div className="form-row">
-            <div className="form-label">Requestor:</div>
-            <div className="form-value">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* App Name Section - Left Column */}
+        <div className="border rounded-md overflow-hidden">
+          <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+            App Name – {formData.appName ? formData.appName : "Enter Name Below"}
+          </div>
+          <div className="p-4 space-y-2">
+            {renderField("Requestor", 
               <Input 
                 value={formData.requestor} 
                 onChange={(e) => handleChange("requestor", e.target.value)}
                 placeholder="Enter requestor name"
+                className="w-full text-right"
               />
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">App Owner:</div>
-            <div className="form-value">
+            )}
+            
+            {renderField("App Owner", 
               <Input 
                 value={formData.appOwner} 
                 onChange={(e) => handleChange("appOwner", e.target.value)}
                 placeholder="Enter app owner name"
+                className="w-full text-right"
               />
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">L1 Leadership:</div>
-            <div className="form-value">
+            )}
+            
+            {renderField("L1 Leadership", 
               <Input 
                 value={formData.l1Leadership} 
                 onChange={(e) => handleChange("l1Leadership", e.target.value)}
                 placeholder="Enter L1 leadership name"
+                className="w-full text-right"
               />
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Date requested for build:</div>
-            <div className="form-value">
+            )}
+            
+            {renderField("Date requested for build", 
               <Input 
                 type="date" 
                 value={formData.dateRequested} 
                 onChange={(e) => handleChange("dateRequested", e.target.value)}
+                className="w-full text-right"
               />
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Funding Available:</div>
-            <div className="form-value">
+            )}
+            
+            {renderField("Domain", 
+              <Input 
+                value={formData.domain} 
+                onChange={(e) => handleChange("domain", e.target.value)}
+                placeholder="Enter domain"
+                className="w-full text-right"
+              />
+            )}
+            
+            {renderField("Funding Available", 
               <Select 
                 value={formData.fundingAvailable} 
                 onValueChange={(value) => handleYesNoChange("fundingAvailable", value)}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-24 ml-auto">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="end">
                   <SelectItem value="Yes">Yes</SelectItem>
                   <SelectItem value="No">No</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Fund Code or Project Name:</div>
-            <div className="form-value">
+            )}
+            
+            {renderField("Fund Code or Project Name", 
               <Input 
                 value={formData.fundCode} 
                 onChange={(e) => handleChange("fundCode", e.target.value)}
-                placeholder="Pending"
+                placeholder="Enter fund code"
+                className="w-full text-right"
               />
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">ASG/IRB:</div>
-            <div className="form-value">
+            )}
+            
+            {renderField("ASG/IRB", 
               <Input 
                 value={formData.asgIrb} 
                 onChange={(e) => handleChange("asgIrb", e.target.value)}
-                placeholder="NA – Existing App"
+                placeholder="Enter ASG/IRB"
+                className="w-full text-right"
               />
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Location Section */}
-      <div className="form-section">
-        <div className="form-section-header">
-          Location
-        </div>
-        <div className="form-section-content">
-          <div className="form-row">
-            <div className="form-label">Azure:</div>
-            <div className="form-value">
-              <Select 
-                value={formData.azure} 
-                onValueChange={(value) => handleYesNoChange("azure", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">On Prem:</div>
-            <div className="form-value">
-              <Select 
-                value={formData.onPrem} 
-                onValueChange={(value) => handleYesNoChange("onPrem", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Data Center Location:</div>
-            <div className="form-value">
+            )}
+            
+            <div className="col-span-2 mt-4">
+              <Label htmlFor="appName" className="block font-medium mb-1">Application Name</Label>
               <Input 
-                value={formData.dataCenterLocation} 
-                onChange={(e) => handleChange("dataCenterLocation", e.target.value)}
-                placeholder="EUS"
-              />
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Physical:</div>
-            <div className="form-value">
-              <Select 
-                value={formData.physical} 
-                onValueChange={(value) => handleYesNoChange("physical", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Reason for Physical:</div>
-            <div className="form-value">
-              <Textarea 
-                value={formData.locationPhysicalReason} 
-                onChange={(e) => handleChange("locationPhysicalReason", e.target.value)}
-                placeholder="Enter reason if applicable"
-                className="min-h-[60px]"
+                id="appName"
+                value={formData.appName} 
+                onChange={(e) => handleChange("appName", e.target.value)}
+                placeholder="Enter application name"
+                className="w-full"
               />
             </div>
           </div>
         </div>
-      </div>
-      
-      {/* Server Count Section */}
-      <div className="form-section">
-        <div className="form-section-header">
-          Server Count
-        </div>
-        <div className="form-section-content">
-          <div className="form-row">
-            <div className="form-label">Prod:</div>
-            <div className="form-value">
-              <Input 
-                type="number" 
-                value={formData.prodServerCount.toString()} 
-                onChange={(e) => handleChange("prodServerCount", parseInt(e.target.value) || 0)}
-                min={0}
-              />
-            </div>
+        
+        {/* Middle column - first row (Support Needs) */}
+        <div className="border rounded-md overflow-hidden">
+          <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+            Support Needs
           </div>
-          
-          <div className="form-row">
-            <div className="form-label">Non-Prod:</div>
-            <div className="form-value">
-              <Input 
-                type="number" 
-                value={formData.nonProdServerCount.toString()} 
-                onChange={(e) => handleChange("nonProdServerCount", parseInt(e.target.value) || 0)}
-                min={0}
-              />
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">DR:</div>
-            <div className="form-value">
-              <Input 
-                type="number" 
-                value={formData.drServerCount.toString()} 
-                onChange={(e) => handleChange("drServerCount", parseInt(e.target.value) || 0)}
-                min={0}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Environments Section */}
-      <div className="form-section">
-        <div className="form-section-header">
-          Environments
-        </div>
-        <div className="form-section-content">
-          <div className="form-row">
-            <div className="form-label">Prod:</div>
-            <div className="form-value">
-              <Select 
-                value={formData.prodEnv} 
-                onValueChange={(value) => handleYesNoChange("prodEnv", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Non-Prod:</div>
-            <div className="form-value">
-              <Select 
-                value={formData.nonProdEnv} 
-                onValueChange={(value) => handleYesNoChange("nonProdEnv", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">DR:</div>
-            <div className="form-value">
-              <Select 
-                value={formData.drEnv} 
-                onValueChange={(value) => handleYesNoChange("drEnv", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Support Needs Section */}
-      <div className="form-section">
-        <div className="form-section-header">
-          Support Needs
-        </div>
-        <div className="form-section-content">
-          <div className="form-row">
-            <div className="form-label">CMS Full Support:</div>
-            <div className="form-value">
+          <div className="p-4 space-y-2">
+            {renderField("CMS Full Support", 
               <Select 
                 value={formData.cmsFullSupport} 
                 onValueChange={(value) => handleYesNoChange("cmsFullSupport", value)}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-24 ml-auto">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="end">
                   <SelectItem value="Yes">Yes</SelectItem>
                   <SelectItem value="No">No</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Exceptions to CMS Support:</div>
-            <div className="form-value">
-              <Textarea 
-                value={formData.cmsExceptions} 
-                onChange={(e) => handleChange("cmsExceptions", e.target.value)}
-                placeholder="Enter any exceptions"
-                className="min-h-[60px]"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Database Platforms Section */}
-      <div className="form-section">
-        <div className="form-section-header">
-          Database Platforms
-        </div>
-        <div className="form-section-content">
-          <div className="form-row">
-            <div className="form-label">SQL:</div>
-            <div className="form-value">
-              <Select 
-                value={formData.sql} 
-                onValueChange={(value) => handleYesNoChange("sql", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Oracle:</div>
-            <div className="form-value">
-              <Select 
-                value={formData.oracle} 
-                onValueChange={(value) => handleYesNoChange("oracle", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Other (explain):</div>
-            <div className="form-value">
-              <Select 
-                value={formData.otherDb} 
-                onValueChange={(value) => handleYesNoChange("otherDb", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          {formData.otherDb === "Yes" && (
-            <div className="form-row">
-              <div className="form-label">Explanation:</div>
-              <div className="form-value">
+            )}
+            
+            {renderField("Exceptions to CMS Support", 
+              <div className="w-full">
                 <Textarea 
-                  value={formData.otherDbExplain} 
-                  onChange={(e) => handleChange("otherDbExplain", e.target.value)}
-                  placeholder="Explain other database platform"
-                  className="min-h-[60px]"
+                  value={formData.cmsExceptions} 
+                  onChange={(e) => handleChange("cmsExceptions", e.target.value)}
+                  placeholder="Enter any exceptions"
+                  className="min-h-[60px] text-right"
                 />
               </div>
-            </div>
-          )}
-        </div>
-      </div>
-      
-      {/* Storage Needs Section */}
-      <div className="form-section">
-        <div className="form-section-header">
-          Storage Needs
-        </div>
-        <div className="form-section-content">
-          <div className="form-row">
-            <div className="form-label">Azure Type:</div>
-            <div className="form-value">
-              <Select 
-                value={formData.azureType} 
-                onValueChange={(value) => handleYesNoChange("azureType", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Azure Volume:</div>
-            <div className="form-value">
-              <Input 
-                value={formData.azureVolume} 
-                onChange={(e) => handleChange("azureVolume", e.target.value)}
-                placeholder="e.g., 2x1.2TB & 1x500GB"
-              />
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">On Prem:</div>
-            <div className="form-value">
-              <Select 
-                value={formData.onPremStorage} 
-                onValueChange={(value) => handleYesNoChange("onPremStorage", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">On Prem Volume:</div>
-            <div className="form-value">
-              <Input 
-                value={formData.onPremVolume} 
-                onChange={(e) => handleChange("onPremVolume", e.target.value)}
-                placeholder="Enter volume if applicable"
-              />
-            </div>
+            )}
           </div>
         </div>
-      </div>
-      
-      {/* Exceptions Section */}
-      <div className="form-section">
-        <div className="form-section-header">
-          Exceptions
-        </div>
-        <div className="form-section-content">
-          <div className="form-row">
-            <div className="form-label">Backup:</div>
-            <div className="form-value">
+        
+        {/* Right column - first row (Exceptions) */}
+        <div className="border rounded-md overflow-hidden">
+          <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+            Exceptions
+          </div>
+          <div className="p-4 space-y-2">
+            {renderField("Backup", 
               <Select 
                 value={formData.backup} 
                 onValueChange={(value) => handleYesNoChange("backup", value)}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-24 ml-auto">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="end">
                   <SelectItem value="Yes">Yes</SelectItem>
                   <SelectItem value="No">No</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">DR:</div>
-            <div className="form-value">
+            )}
+            
+            {renderField("DR", 
               <Select 
                 value={formData.dr} 
                 onValueChange={(value) => handleYesNoChange("dr", value)}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-24 ml-auto">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="end">
                   <SelectItem value="Yes">Yes</SelectItem>
                   <SelectItem value="No">No</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Physical:</div>
-            <div className="form-value">
+            )}
+            
+            {renderField("Physical", 
               <Select 
                 value={formData.physical_exceptions} 
                 onValueChange={(value) => handleYesNoChange("physical_exceptions", value)}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-24 ml-auto">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="end">
                   <SelectItem value="Yes">Yes</SelectItem>
                   <SelectItem value="No">No</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Reason for Physical:</div>
-            <div className="form-value">
-              <Textarea 
+            )}
+            
+            {renderField("Reason for Physical", 
+              <Input 
                 value={formData.physicalReason} 
                 onChange={(e) => handleChange("physicalReason", e.target.value)}
-                placeholder="Enter reason if applicable"
-                className="min-h-[60px]"
+                placeholder=""
+                className="w-full text-right"
               />
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">On Prem:</div>
-            <div className="form-value">
+            )}
+            
+            {renderField("On Prem", 
               <Select 
                 value={formData.onPremExceptions} 
                 onValueChange={(value) => handleYesNoChange("onPremExceptions", value)}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-24 ml-auto">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="end">
                   <SelectItem value="Yes">Yes</SelectItem>
                   <SelectItem value="No">No</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">Reason for On Prem:</div>
-            <div className="form-value">
-              <Textarea 
+            )}
+            
+            {renderField("Reason for On Prem", 
+              <Input 
                 value={formData.onPremReason} 
                 onChange={(e) => handleChange("onPremReason", e.target.value)}
-                placeholder="Enter reason if applicable"
-                className="min-h-[60px]"
+                placeholder=""
+                className="w-full text-right"
               />
-            </div>
-          </div>
-          
-          <div className="form-row">
-            <div className="form-label">No-Test Env sign-off:</div>
-            <div className="form-value">
+            )}
+            
+            {renderField("No-Test Env sign-off", 
               <Input 
                 value={formData.noTestEnvSignOff} 
                 onChange={(e) => handleChange("noTestEnvSignOff", e.target.value)}
-                placeholder="Enter NA if not applicable"
+                placeholder=""
+                className="w-full text-right"
               />
+            )}
+          </div>
+        </div>
+        
+        {/* Second Row */}
+        {/* Left column - second row (Location) */}
+        <div className="border rounded-md overflow-hidden">
+          <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+            Location
+          </div>
+          <div className="p-4 space-y-2">
+            {renderField("Azure", 
+              <Select 
+                value={formData.azure} 
+                onValueChange={(value) => handleYesNoChange("azure", value)}
+              >
+                <SelectTrigger className="w-24 ml-auto">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent align="end">
+                  <SelectItem value="Yes">Yes</SelectItem>
+                  <SelectItem value="No">No</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+            
+            {renderField("On Prem", 
+              <Select 
+                value={formData.onPrem} 
+                onValueChange={(value) => handleYesNoChange("onPrem", value)}
+              >
+                <SelectTrigger className="w-24 ml-auto">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent align="end">
+                  <SelectItem value="Yes">Yes</SelectItem>
+                  <SelectItem value="No">No</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+            
+            {renderField("Data Center Location", 
+              <Select 
+                value={formData.dataCenterLocation} 
+                onValueChange={(value) => handleChange("dataCenterLocation", value)}
+              >
+                <SelectTrigger className="w-24 ml-auto">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent align="end">
+                  <SelectItem value="EUS">EUS</SelectItem>
+                  <SelectItem value="No">No</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+            
+            {renderField("Physical", 
+              <Select 
+                value={formData.physical} 
+                onValueChange={(value) => handleYesNoChange("physical", value)}
+              >
+                <SelectTrigger className="w-24 ml-auto">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent align="end">
+                  <SelectItem value="Yes">Yes</SelectItem>
+                  <SelectItem value="No">No</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+            
+            {renderField("Reason for Physical", 
+              <Input 
+                value={formData.locationPhysicalReason} 
+                onChange={(e) => handleChange("locationPhysicalReason", e.target.value)}
+                placeholder=""
+                className="w-full text-right"
+              />
+            )}
+          </div>
+        </div>
+        
+        {/* Middle column - second row (Two small boxes) */}
+        <div className="grid grid-rows-2 gap-6">
+          {/* Server Count box */}
+          <div className="border rounded-md overflow-hidden">
+            <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+              Server Count
+            </div>
+            <div className="p-4 space-y-2">
+              {renderField("Prod", 
+                <Input 
+                  type="number" 
+                  value={formData.prodServerCount.toString()} 
+                  onChange={(e) => handleChange("prodServerCount", parseInt(e.target.value) || 0)}
+                  min={0}
+                  className="w-24 text-right ml-auto"
+                />
+              )}
+              
+              {renderField("Non-Prod", 
+                <Input 
+                  type="number" 
+                  value={formData.nonProdServerCount.toString()} 
+                  onChange={(e) => handleChange("nonProdServerCount", parseInt(e.target.value) || 0)}
+                  min={0}
+                  className="w-24 text-right ml-auto"
+                />
+              )}
+              
+              {renderField("DR", 
+                <Input 
+                  type="number" 
+                  value={formData.drServerCount.toString()} 
+                  onChange={(e) => handleChange("drServerCount", parseInt(e.target.value) || 0)}
+                  min={0}
+                  className="w-24 text-right ml-auto"
+                />
+              )}
+            </div>
+          </div>
+          
+          {/* Environments box */}
+          <div className="border rounded-md overflow-hidden">
+            <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+              Environments
+            </div>
+            <div className="p-4 space-y-2">
+              {renderField("Prod", 
+                <Select 
+                  value={formData.prodEnv} 
+                  onValueChange={(value) => handleYesNoChange("prodEnv", value)}
+                >
+                  <SelectTrigger className="w-24 ml-auto">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+              
+              {renderField("Non-Prod", 
+                <Select 
+                  value={formData.nonProdEnv} 
+                  onValueChange={(value) => handleYesNoChange("nonProdEnv", value)}
+                >
+                  <SelectTrigger className="w-24 ml-auto">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+              
+              {renderField("DR", 
+                <Select 
+                  value={formData.drEnv} 
+                  onValueChange={(value) => handleYesNoChange("drEnv", value)}
+                >
+                  <SelectTrigger className="w-24 ml-auto">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </div>
         </div>
-      </div>
-      
-      {/* Other Notes Section */}
-      <div className="form-section">
-        <div className="form-section-header">
-          Other Notes
+        
+        {/* Right column - second and third row */}
+        <div className="grid grid-rows-2 gap-6">
+          {/* Database Platforms box */}
+          <div className="border rounded-md overflow-hidden">
+            <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+              Database Platforms
+            </div>
+            <div className="p-4 space-y-2">
+              {renderField("SQL", 
+                <Select 
+                  value={formData.sql} 
+                  onValueChange={(value) => handleYesNoChange("sql", value)}
+                >
+                  <SelectTrigger className="w-24 ml-auto">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+              
+              {renderField("Oracle", 
+                <Select 
+                  value={formData.oracle} 
+                  onValueChange={(value) => handleYesNoChange("oracle", value)}
+                >
+                  <SelectTrigger className="w-24 ml-auto">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+              
+              {renderField("Other (explain)", 
+                <Select 
+                  value={formData.otherDb} 
+                  onValueChange={(value) => handleYesNoChange("otherDb", value)}
+                >
+                  <SelectTrigger className="w-24 ml-auto">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+              
+              {formData.otherDb === "Yes" && (
+                <div className="col-span-2 mt-2">
+                  <Textarea 
+                    value={formData.otherDbExplain} 
+                    onChange={(e) => handleChange("otherDbExplain", e.target.value)}
+                    placeholder="Explain other database platform"
+                    className="min-h-[60px] w-full"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Storage Needs box */}
+          <div className="border rounded-md overflow-hidden">
+            <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+              Storage Needs
+            </div>
+            <div className="p-4 space-y-2">
+              {renderField("Azure Type", 
+                <Input 
+                  value={formData.azureType} 
+                  onChange={(e) => handleChange("azureType", e.target.value)}
+                  placeholder=""
+                  className="w-full text-right"
+                />
+              )}
+              
+              {renderField("Azure Volumes", 
+                <Input 
+                  value={formData.azureVolume} 
+                  onChange={(e) => handleChange("azureVolume", e.target.value)}
+                  placeholder=""
+                  className="w-full text-right"
+                />
+              )}
+              
+              {renderField("On Prem", 
+                <Select 
+                  value={formData.onPremStorage} 
+                  onValueChange={(value) => handleYesNoChange("onPremStorage", value)}
+                >
+                  <SelectTrigger className="w-24 ml-auto">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+              
+              {renderField("On Prem Volume", 
+                <Input 
+                  value={formData.onPremVolume} 
+                  onChange={(e) => handleChange("onPremVolume", e.target.value)}
+                  placeholder=""
+                  className="w-full text-right"
+                />
+              )}
+            </div>
+          </div>
         </div>
-        <div className="form-section-content">
-          <Textarea 
-            value={formData.otherNotes} 
-            onChange={(e) => handleChange("otherNotes", e.target.value)}
-            placeholder="Enter any additional notes here"
-            className="min-h-[100px] w-full"
-          />
+        
+        {/* Bottom row - Other Notes */}
+        <div className="border rounded-md overflow-hidden col-span-1 md:col-span-3">
+          <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+            Other Notes
+          </div>
+          <div className="p-4">
+            <Textarea 
+              value={formData.otherNotes} 
+              onChange={(e) => handleChange("otherNotes", e.target.value)}
+              placeholder="Enter any additional notes here"
+              className="min-h-[100px] w-full"
+            />
+          </div>
         </div>
       </div>
       
