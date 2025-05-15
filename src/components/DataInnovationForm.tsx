@@ -64,6 +64,9 @@ interface FormData {
   
   // Other Notes section
   otherNotes: string;
+
+  // Tab Manager signoff
+  tabManagerSignoff: string;
 }
 
 const initialFormData: FormData = {
@@ -122,6 +125,9 @@ const initialFormData: FormData = {
   
   // Other Notes section
   otherNotes: "• DB size 10G\n• SQL on VM:\n  • 4 vCPU & 32G RAM\n  • Windows 2022 license\n• Azure SQL MI\n• Azure SQL DB",
+  
+  // Tab Manager signoff
+  tabManagerSignoff: "No",
 };
 
 const DataInnovationForm: React.FC = () => {
@@ -705,6 +711,29 @@ const DataInnovationForm: React.FC = () => {
               placeholder="Enter any additional notes here"
               className="min-h-[100px] w-full"
             />
+          </div>
+        </div>
+        
+        {/* Tab Manager Signoff */}
+        <div className="border rounded-md overflow-hidden col-span-1 md:col-span-3">
+          <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+            Tab Manager Signoff
+          </div>
+          <div className="p-4 space-y-2">
+            {renderField("Tab Manager Approval", 
+              <Select 
+                value={formData.tabManagerSignoff} 
+                onValueChange={(value) => handleYesNoChange("tabManagerSignoff", value)}
+              >
+                <SelectTrigger className="w-24 ml-auto">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent align="end">
+                  <SelectItem value="Yes">Yes</SelectItem>
+                  <SelectItem value="No">No</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
         </div>
       </div>
