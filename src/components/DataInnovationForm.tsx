@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -308,7 +309,7 @@ const DataInnovationForm: React.FC = () => {
                   value={formData.cmsExceptions} 
                   onChange={(e) => handleChange("cmsExceptions", e.target.value)}
                   placeholder="Enter any exceptions"
-                  className="min-h-[60px] text-right"
+                  className="min-h-[120px] text-right"
                 />
               </div>
             )}
