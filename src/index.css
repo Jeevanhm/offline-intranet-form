@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -115,19 +114,19 @@
 }
 
 .form-section {
-  @apply border border-gray-400 rounded-md mb-4;
+  @apply border border-gray-400 rounded-md mb-3;
 }
 
 .form-section-header {
-  @apply text-center font-semibold p-3 bg-blue-100 border-b border-gray-400;
+  @apply text-center font-semibold p-2 bg-blue-100 border-b border-gray-400;
 }
 
 .form-section-content {
-  @apply p-3;
+  @apply p-2;
 }
 
 .form-row {
-  @apply flex flex-wrap mb-2;
+  @apply flex flex-wrap mb-1;
 }
 
 .form-label {
@@ -137,4 +136,3 @@
 .form-value {
   @apply w-2/3;
 }
-
