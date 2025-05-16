@@ -7,6 +7,9 @@ import { useToast } from '@/hooks/use-toast';
 import { saveFormData } from '@/utils/offlineStorage';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
+import { Form, FormItem, FormLabel, FormControl, FormDescription } from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import { FileUploader } from './FileUploader';
 
 interface FormData {
   // App Name section
@@ -65,8 +68,11 @@ interface FormData {
   // Other Notes section
   otherNotes: string;
 
-  // Manager Approval
+  // Approval Status (renamed from Manager Approval)
   tabManagerSignoff: string;
+  
+  // PDF Document
+  pdfDocument: File | null;
 }
 
 const initialFormData: FormData = {
@@ -126,16 +132,20 @@ const initialFormData: FormData = {
   // Other Notes section
   otherNotes: "• DB size 10G\n• SQL on VM:\n  • 4 vCPU & 32G RAM\n  • Windows 2022 license\n• Azure SQL MI\n• Azure SQL DB",
   
-  // Manager Approval
+  // Approval Status (renamed from Manager Approval)
   tabManagerSignoff: "No",
+  
+  // PDF Document
+  pdfDocument: null,
 };
 
 const DataInnovationForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const { toast } = useToast();
   
-  const handleChange = (field: keyof FormData, value: string | number) => {
+  const handleChange = (field: keyof FormData, value: string | number | File | null) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -144,6 +154,23 @@ const DataInnovationForm: React.FC = () => {
   
   const handleYesNoChange = (field: keyof FormData, value: string) => {
     handleChange(field, value);
+  };
+
+  const handleFileUpload = (file: File | null) => {
+    handleChange("pdfDocument", file);
+    
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      setPdfUrl(fileUrl);
+      
+      toast({
+        title: "File Uploaded",
+        description: `Successfully uploaded ${file.name}`,
+        duration: 3000,
+      });
+    } else {
+      setPdfUrl(null);
+    }
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -719,13 +746,13 @@ const DataInnovationForm: React.FC = () => {
           </div>
         </div>
         
-        {/* Manager Approval - renamed from Tab Manager Signoff */}
+        {/* Approval Status - renamed from Manager Approval */}
         <div className="border rounded-md overflow-hidden col-span-1 md:col-span-3">
           <div className="bg-gray-100 p-3 text-center font-semibold border-b">
-            Manager Approval
+            Approval Status
           </div>
           <div className="p-4 space-y-2">
-            {renderField("Manager Approval", 
+            {renderField("Approval Status", 
               <Select 
                 value={formData.tabManagerSignoff} 
                 onValueChange={(value) => handleYesNoChange("tabManagerSignoff", value)}
@@ -739,6 +766,46 @@ const DataInnovationForm: React.FC = () => {
                 </SelectContent>
               </Select>
             )}
+          </div>
+        </div>
+
+        {/* PDF Document Upload Section */}
+        <div className="border rounded-md overflow-hidden col-span-1 md:col-span-3">
+          <div className="bg-gray-100 p-3 text-center font-semibold border-b">
+            Supporting Documentation
+          </div>
+          <div className="p-4 space-y-4">
+            <div className="grid grid-cols-1 gap-4">
+              <Label htmlFor="pdfUpload" className="font-medium">Upload PDF Document:</Label>
+              <FileUploader onFileUpload={handleFileUpload} acceptedFileTypes=".pdf" />
+              
+              {pdfUrl && (
+                <div className="border rounded p-2 mt-4">
+                  <Label className="block text-sm font-medium mb-2">Uploaded Document Preview:</Label>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-gray-600">
+                      {formData.pdfDocument?.name || "Document"}
+                    </span>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.open(pdfUrl, '_blank')}
+                    >
+                      View Full Document
+                    </Button>
+                  </div>
+                  <div className="border rounded overflow-hidden" style={{ height: '300px' }}>
+                    <iframe 
+                      src={pdfUrl}
+                      width="100%" 
+                      height="100%" 
+                      title="PDF Preview" 
+                      className="border-0"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
