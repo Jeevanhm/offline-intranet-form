@@ -119,7 +119,7 @@
 }
 
 .form-section-header {
-  @apply text-center font-semibold p-3 bg-gray-100 border-b border-gray-400;
+  @apply text-center font-semibold p-3 bg-blue-100 border-b border-gray-400;
 }
 
 .form-section-content {
@@ -137,3 +137,4 @@
 .form-value {
   @apply w-2/3;
 }
+
