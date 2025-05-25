@@ -18,13 +18,13 @@ const AppLayout: React.FC = () => {
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
-          <div className="bg-gray-100 p-0.5">
-            <TabsList className="grid w-full grid-cols-2 gap-1">
-              <TabsTrigger value="form" className="flex items-center justify-center gap-1 py-0.5 text-xs">
+          <div className="bg-gray-100 p-0">
+            <TabsList className="grid w-full grid-cols-2 gap-0 h-8">
+              <TabsTrigger value="form" className="flex items-center justify-center gap-1 py-1 text-xs h-full">
                 <Home className="h-3 w-3" />
                 <span>New Request</span>
               </TabsTrigger>
-              <TabsTrigger value="data" className="flex items-center justify-center gap-1 py-0.5 text-xs">
+              <TabsTrigger value="data" className="flex items-center justify-center gap-1 py-1 text-xs h-full">
                 <FileText className="h-3 w-3" />
                 <span>View & Export</span>
               </TabsTrigger>
