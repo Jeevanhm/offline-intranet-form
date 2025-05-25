@@ -52,11 +52,11 @@ const DataManagement: React.FC = () => {
     }
 
     try {
-      const success = exportToExcel(formSubmissions, 'data-innovation-app.xlsx');
+      const success = exportToExcel(formSubmissions, 'intake-application.xlsx');
       if (success) {
         toast({
           title: "Export Successful",
-          description: "Form submissions have been exported to Excel.",
+          description: "Form submissions have been appended to the Excel file.",
         });
       }
     } catch (error) {
@@ -88,47 +88,48 @@ const DataManagement: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Saved Form Submissions</h2>
-        <Button onClick={handleExport} disabled={formSubmissions.length === 0}>
-          <FileText className="mr-2 h-4 w-4" />
+        <h2 className="text-lg font-bold">Saved Requests</h2>
+        <Button onClick={handleExport} disabled={formSubmissions.length === 0} size="sm">
+          <FileText className="mr-1 h-3 w-3" />
           Export to Excel
         </Button>
       </div>
 
       {loading ? (
-        <div className="text-center py-10">Loading submissions...</div>
+        <div className="text-center py-6 text-sm">Loading submissions...</div>
       ) : formSubmissions.length === 0 ? (
-        <div className="text-center py-10 text-gray-500">
+        <div className="text-center py-6 text-gray-500 text-sm">
           No form submissions found. Submit a new request to see it here.
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="app-table">
+          <table className="app-table text-xs">
             <thead>
               <tr>
-                <th>App Name</th>
-                <th>Requestor</th>
-                <th>Date Requested</th>
-                <th>Submission Date</th>
-                <th>Actions</th>
+                <th className="p-1">App Name</th>
+                <th className="p-1">Requestor</th>
+                <th className="p-1">Date Requested</th>
+                <th className="p-1">Submission Date</th>
+                <th className="p-1">Actions</th>
               </tr>
             </thead>
             <tbody>
               {formSubmissions.map((submission) => (
                 <tr key={submission.id}>
-                  <td>{submission.appName}</td>
-                  <td>{submission.requestor}</td>
-                  <td>{submission.dateRequested}</td>
-                  <td>{new Date(submission.timestamp).toLocaleString()}</td>
-                  <td>
+                  <td className="p-1">{submission.appName}</td>
+                  <td className="p-1">{submission.requestor}</td>
+                  <td className="p-1">{submission.dateRequested}</td>
+                  <td className="p-1">{new Date(submission.timestamp).toLocaleDateString()}</td>
+                  <td className="p-1">
                     <Button
                       variant="destructive"
                       size="sm"
                       onClick={() => handleDelete(submission.id)}
+                      className="h-6 w-6 p-0"
                     >
-                      <Trash className="h-4 w-4" />
+                      <Trash className="h-3 w-3" />
                     </Button>
                   </td>
                 </tr>

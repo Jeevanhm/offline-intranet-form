@@ -1,17 +1,31 @@
 
 import * as XLSX from 'xlsx';
 
-// Function to export data to Excel file
-export const exportToExcel = (data: any[], fileName: string = 'data-innovation-app.xlsx') => {
+// Function to export data to Excel file with append functionality
+export const exportToExcel = (data: any[], fileName: string = 'intake-application.xlsx') => {
   try {
+    let existingData: any[] = [];
+    
+    // Try to read existing file data from localStorage
+    const savedData = localStorage.getItem('intake-app-excel-data');
+    if (savedData) {
+      existingData = JSON.parse(savedData);
+    }
+    
+    // Combine existing data with new data
+    const combinedData = [...existingData, ...data];
+    
+    // Save updated data to localStorage for future appends
+    localStorage.setItem('intake-app-excel-data', JSON.stringify(combinedData));
+    
     // Create a new workbook
     const wb = XLSX.utils.book_new();
     
-    // Convert data to worksheet
-    const ws = XLSX.utils.json_to_sheet(data);
+    // Convert combined data to worksheet
+    const ws = XLSX.utils.json_to_sheet(combinedData);
     
     // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(wb, ws, 'Form Submissions');
+    XLSX.utils.book_append_sheet(wb, ws, 'Intake Requests');
     
     // Write workbook to file and trigger download
     XLSX.writeFile(wb, fileName);
